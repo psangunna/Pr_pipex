@@ -66,7 +66,6 @@ static void	ft_handle_child1(int fd[2], const char *comd1,
 	ft_redirect_input_output(fd_in, STDIN_FILENO);
 	ft_redirect_input_output(fd[WRITE_END], STDOUT_FILENO);
 	ft_execute_command(comd1, env);
-	close(fd_in);
 }
 
 static void	ft_handle_child2(int fd[2], const char *comd2,
@@ -84,7 +83,6 @@ static void	ft_handle_child2(int fd[2], const char *comd2,
 	}
 	ft_redirect_input_output(fd_out, STDOUT_FILENO);
 	ft_execute_command(comd2, env);
-	close(fd_out);
 }
 
 int	main(int argc, char *argv[], char *env[])
