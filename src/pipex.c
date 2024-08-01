@@ -5,13 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: psangunna <psanguna@student.42madrid>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/09 18:39:34 by psangunna         #+#    #+#             */
-/*   Updated: 2024/07/09 18:39:39 by psangunna        ###   ########.fr       */
+/*   Created: 2024/08/01 13:32:12 by psangunna         #+#    #+#             */
+/*   Updated: 2024/08/01 13:32:17 by psangunna        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "pipex.h"
 
-static pid_t	ft_create_child(void)
+static pid_t	ft_create_process(void)
 {
 	pid_t	pid;
 
@@ -27,31 +28,26 @@ static pid_t	ft_create_child(void)
 static void	ft_execute_command(const char *cmd, char *env[])
 {
 	char	**command_array;
-	char	*path;
+	char	*paths;
+	char	*right_path;
+	char	**paths_array;
 
 	command_array = ft_split(cmd, ' ');
-	if (!command_array)
+	paths = ft_get_set_paths(env);
+	paths_array = ft_split(paths, ':');
+	right_path = ft_get_path(command_array[0], paths_array);
+	ft_free_array(paths_array);
+	if (execve(right_path, command_array, env) == -1)
 	{
-		ft_putstr_fd("Failed to split command string", 2);
+		ft_putstr_fd("pipex: command not found: ", 2);
+		ft_putendl_fd(command_array[0], 2);
+		ft_free_array(command_array);
+		free(right_path);
 		exit(1);
 	}
-	path = ft_get_path(command_array[0], env);
-	if (path)
-	{
-		if (execve(path, command_array, env) == -1)
-		{
-			ft_putstr_fd("pipex: command not found: ", 2);
-			ft_putendl_fd(command_array[0], 2);
-			ft_free_array(command_array);
-			free(path);
-			exit(1);
-		}
-		free(path);
-	}
-	ft_free_array(command_array);
 }
 
-static void	ft_handle_child1(int fd[2], const char *comd1,
+static void	ft_handle_first_process(int fd[2], const char *comd1,
 		const char *in_file, char *env[])
 {
 	int	fd_in;
@@ -68,7 +64,7 @@ static void	ft_handle_child1(int fd[2], const char *comd1,
 	ft_execute_command(comd1, env);
 }
 
-static void	ft_handle_child2(int fd[2], const char *comd2,
+static void	ft_handle_second_process(int fd[2], const char *comd2,
 		const char *out_file, char *env[])
 {
 	int	fd_out;
@@ -93,7 +89,7 @@ int	main(int argc, char *argv[], char *env[])
 
 	if (argc != 5)
 	{
-		ft_putstr_fd("Use:./pipex inputFile command1 command2 outputFile", 2);
+		ft_putstr_fd("Use:./pipex inputfile command1 command2 outputfile", 2);
 		exit(1);
 	}
 	if (pipe(fd) == -1)
@@ -101,15 +97,15 @@ int	main(int argc, char *argv[], char *env[])
 		perror("Error creating pipe");
 		exit(1);
 	}
-	pid1 = ft_create_child();
+	pid1 = ft_create_process();
 	if (pid1 == 0)
-		ft_handle_child1(fd, argv[2], argv[1], env);
-	pid2 = ft_create_child();
-	if (pid2 == 0)
-		ft_handle_child2(fd, argv[3], argv[4], env);
-	close(fd[READ_END]);
+		ft_handle_first_process(fd, argv[2], argv[1], env);
 	close(fd[WRITE_END]);
 	waitpid(pid1, NULL, 0);
+	pid2 = ft_create_process();
+	if (pid2 == 0)
+		ft_handle_second_process(fd, argv[3], argv[4], env);
+	close(fd[READ_END]);
 	waitpid(pid2, NULL, 0);
 	return (0);
 }

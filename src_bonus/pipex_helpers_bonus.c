@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_helpers.c                                    :+:      :+:    :+:   */
+/*   pipex_helpers_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psangunna <psanguna@student.42madrid>      +#+  +:+       +#+        */
+/*   By: pamela <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/01 13:35:32 by psangunna         #+#    #+#             */
-/*   Updated: 2024/08/01 13:35:36 by psangunna        ###   ########.fr       */
+/*   Created: 2024/08/01 19:43:58 by pamela            #+#    #+#             */
+/*   Updated: 2024/08/01 19:44:02 by pamela           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 void	ft_redirect_input_output(int old_fd, int new_fd)
 {
@@ -73,4 +73,26 @@ char	*ft_get_path(const char *cmd, char *paths_array[])
 		i++;
 	}
 	return (0);
+}
+
+void	ft_read_and_write_lines(int write_fd, char *delimiter)
+{
+	char	*ret;
+
+	while (1)
+	{
+		ret = get_next_line(STDIN_FILENO);
+		if (ret == NULL)
+		{
+			perror("get_next_line");
+			exit(1);
+		}
+		if (ft_strncmp(ret, delimiter, ft_strlen(delimiter)) == 0)
+		{
+			free(ret);
+			exit(0);
+		}
+		ft_putstr_fd(ret, write_fd);
+		free(ret);
+	}
 }
