@@ -20,7 +20,7 @@ __Pipex__ is a pipe handling project in C. This README provides details on the i
 	- [Usage for Bonus Part](#b_usage)
 - [Acknowledgements](#ack)
 ### _Description_ <a name="description"></a>
-This program replicates the behavior of the shell construction *'< infile cmd1 | cmd2 > outfile'*. The program takes four arguments: *infile*, *command1*, *command2*, and *outfile*.  
+This program replicates the behavior of the shell construction *< infile cmd1 | cmd2 > outfile*. The program takes four arguments: *infile*, *command1*, *command2*, and *outfile*.  
 The program should perform the same operation as the following shell command:  
 ``
 $> < infile command1 | command2 > outfile
@@ -216,7 +216,6 @@ To compile the bonus part, use the included **Makefile**. The available targets 
 * **make bonus**: Compiles the bonus part.
 * **make clean**: Removes object files.
 * **make fclean**: Removes object files and the executable.
-* **make rebonus**: Cleans and recompiles the the bonus part.
-#### Usage for Bonus Part <a name="b_usage"></a>
+* **make rebonus**: Cleans and recompiles the bonus part.
 ### *Acknowledgements* <a name="ack"></a>
 This project is part of the curriculum at [42 Madrid](https://www.42madrid.com/). Thanks to the 42 Network for providing the resources and guidance to complete this project.
