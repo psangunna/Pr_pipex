@@ -195,9 +195,28 @@ sequenceDiagram
 * **ft_create_process**: Creates a child process using f**fork**. If **fork** fails, it prints an error and exits.  
 
 ### *Acknowledgements* <a name="ack"></a>
-### _Bonus Part_ <a name="bonus"></a>
+### _Bonus Part_ <a name="bonus"></a>  
+To enhance the functionality of this project with these additional features:
 #### Bonus Requirements <a name="b_req"></a>
+* **Multiple pipes**:  
+``$ ./pipex infile command1 command2 command3 ... commandN outfile``  
+Should behave as:  
+``$ < infile command1 | command2 | command3 ... | commandN > outfile``
+
+* **"here document"**:  
+``$ ./pipex here_doc LIMITER command command1 file``  
+Should behave as:  
+``command << LIMITER | command1 >> file``
 #### Bonus Files <a name="b_files"></a>
+In addition to the mandatory files, you need to deliver the following files for the bonus part:
+* **Header bonus file (*_bonus.h)**
+* **Source code bonus file (*_bonus.c)**
 #### Compilation for Bonus Part<a name="b_compilation"></a>
+To compile the bonus part, use the included **Makefile**. The available targets are:
+* **make bonus**: Compiles the bonus part.
+* **make clean**: Removes object files.
+* **make fclean**: Removes object files and the executable.
+* **make rebonus**: Cleans and recompiles the the bonus part.
 #### Usage for Bonus Part <a name="b_usage"></a>
+### *Acknowledgements* <a name="ack"></a>
 This project is part of the curriculum at [42 Madrid](https://www.42madrid.com/). Thanks to the 42 Network for providing the resources and guidance to complete this project.
