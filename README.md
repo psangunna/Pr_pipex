@@ -134,7 +134,53 @@ The implementation of this project follows a sequential code approach. Each step
 		        Free allocated memory
 		        Exit with error
 
-#### Sequence Diagram of get_next_line Function and Subfunctions <a name="diagram"></a>
+#### Sequence Diagram of get_next_line Function and Subfunctions <a name="diagram"></a>  
+```mermaid
+sequenceDiagram
+    participant Main as Main Function
+    participant Process1 as First Process
+    participant Process2 as Second Process
+    participant File as File Handling
+    participant Execute as Execute Command
+    participant Pipe as Pipe Management
+
+    Main->>Pipe: Create pipe
+    Pipe-->>Main: Pipe created
+
+    Main->>Process1: Fork first process
+    Process1->>File: Open input file
+    File-->>Process1: Input file opened
+    Process1->>Pipe: Close read end of pipe
+    Process1->>Pipe: Redirect stdin to input file
+    Process1->>Pipe: Redirect stdout to pipe
+    Process1->>Execute: Execute command1
+    Execute->>Execute: Split command into arguments
+    Execute->>Execute: Get paths from environment
+    Execute->>Execute: Split paths into array
+    Execute->>Execute: Find right path for command
+    Execute->>Execute: Execute command with execve
+    Execute-->>Process1: Command executed
+    Process1-->>Main: Exit first process
+
+    Main->>Pipe: Close write end of pipe
+    Main->>Process2: Fork second process
+    Process2->>Pipe: Redirect stdin to pipe
+    Process2->>File: Open output file
+    File-->>Process2: Output file opened
+    Process2->>Pipe: Close write end of pipe
+    Process2->>Pipe: Redirect stdout to output file
+    Process2->>Execute: Execute command2
+    Execute->>Execute: Split command into arguments
+    Execute->>Execute: Get paths from environment
+    Execute->>Execute: Split paths into array
+    Execute->>Execute: Find right path for command
+    Execute->>Execute: Execute command with execve
+    Execute-->>Process2: Command executed
+    Process2-->>Main: Exit second process
+
+    Main->>Main: Wait for both processes to finish
+    Main-->>Main: Cleanup and exit
+````
 #### Code Explanation <a name="code"></a>
 * **ft_execute_command**: Splits the command string into an array, finds the correct path for the command, and executes it using **execve**. If execve fails, it shows an error and exits.
 * **ft_handle_first_process**: Handles the first child process by opening the input file, redirecting input and output, and executing the first command.
