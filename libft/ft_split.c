@@ -5,13 +5,35 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pamela <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/14 19:14:24 by pamela            #+#    #+#             */
-/*   Updated: 2024/04/14 19:15:06 by pamela           ###   ########.fr       */
+/*   Created: 2024/08/03 10:31:13 by pamela            #+#    #+#             */
+/*   Updated: 2024/08/03 10:33:05 by pamela           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "libft.h"
 
-/* Helper function to count the words in a string*/
+#include "libft.h"
+#include <stdio.h>
+
+/* Helper function to manage quotes */
+static size_t	handle_quotes(const char *str, char delimiter)
+{
+	size_t	length;
+
+	length = 0;
+	if (str[length] == '\'')
+	{
+		length++;
+		while (str[length] && !(str[length] == '\'' && \
+					(str[length + 1] == delimiter || str[length + 1] == '\0')))
+		{
+			length++;
+		}
+		if (str[length] == '\'')
+			length++;
+	}
+	return (length);
+}
+
+/* Helper function to count how many words are in the string */
 static size_t	count_words(char const *str, char delimiter)
 {
 	size_t	word_count;
@@ -24,6 +46,8 @@ static size_t	count_words(char const *str, char delimiter)
 		if (str[index] != delimiter)
 		{
 			word_count++;
+			if ((str[index]) == '\'')
+				index += handle_quotes(&str[index], delimiter);
 			while (str[index] && str[index] != delimiter)
 				index++;
 		}
@@ -33,26 +57,32 @@ static size_t	count_words(char const *str, char delimiter)
 	return (word_count);
 }
 
-/* Helper function to get the length of a word */
-static size_t	get_word_length(char const *str, char delimiter)
+/* Helper function to get the works and save them into the array */
+char	*get_word(const char *str, unsigned int start, char delimiter,
+		size_t *word_length)
 {
-	size_t	length;
+	size_t		length;
+	const char	*current;
+	int			quotes;
 
 	length = 0;
-	while (str[length] && str[length] != delimiter)
-		length++;
-	return (length);
-}
-
-/* Helper function to free the memory of an array of strings */
-static void	free_string_array(size_t size, char **array)
-{
-	while (size > 0)
+	quotes = 0;
+	current = &str[start];
+	if (current[length] == '\'')
 	{
-		size--;
-		free(array[size]);
+		length = handle_quotes(current, delimiter);
+		quotes = 1;
 	}
-	free(array);
+	while (current[length] && current[length] != delimiter)
+		length++;
+	if (word_length)
+		*word_length = length;
+	if (quotes == 1)
+	{
+		start = start + 1;
+		length = length -2;
+	}
+	return (ft_substr(str, start, length));
 }
 
 /* Helper function to split a string into an array of substrings */
@@ -61,6 +91,7 @@ static char	**split_string(char const *str, char delimiter,
 {
 	size_t	str_index;
 	size_t	array_index;
+	size_t	word_length;
 
 	str_index = 0;
 	array_index = 0;
@@ -68,15 +99,15 @@ static char	**split_string(char const *str, char delimiter,
 	{
 		while (str[str_index] && str[str_index] == delimiter)
 			str_index++;
-		array[array_index] = ft_substr(str, str_index,
-				get_word_length(&str[str_index], delimiter));
+		array[array_index] = get_word(str, str_index, delimiter, &word_length);
 		if (!array[array_index])
 		{
-			free_string_array(array_index, array);
+			while (array_index-- > 0)
+				free(array[array_index]);
+			free(array);
 			return (0);
 		}
-		while (str[str_index] && str[str_index] != delimiter)
-			str_index++;
+		str_index += word_length;
 		array_index++;
 	}
 	array[array_index] = NULL;

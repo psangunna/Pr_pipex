@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pamela <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: psangunna <psanguna@student.42madrid>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/01 19:42:56 by pamela            #+#    #+#             */
-/*   Updated: 2024/08/01 19:43:01 by pamela           ###   ########.fr       */
+/*   Created: 2024/08/03 10:53:10 by psangunna         #+#    #+#             */
+/*   Updated: 2024/08/03 10:56:04 by psangunna        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static void	ft_execute_command(const char *cmd, char *env[])
 	ft_free_array(paths_array);
 	if (execve(right_path, command_array, env) == -1)
 	{
-		ft_putstr_fd("pipex: command not found: ", 2);
+		ft_putstr_fd("pipex: command not found: ", 1);
 		ft_putendl_fd(command_array[0], 2);
 		ft_free_array(command_array);
 		free(right_path);
@@ -115,7 +115,7 @@ int	main(int argc, char *argv[], char *env[])
 
 	if (argc < 5)
 	{
-		ft_putstr_fd("Use:./pipex infile comnd1 comd2 .. comdn outfile", 2);
+		ft_putstr_fd("Use:./pipex infile comnd1 comd2 .. comdn outfile", 1);
 		exit(1);
 	}
 	num_ind = 2;
@@ -123,8 +123,8 @@ int	main(int argc, char *argv[], char *env[])
 	{
 		if (argc < 6)
 		{
-			ft_putstr_fd("Use:./pipex here\\_doc LIMITADOR comd1 comd2 outfile"\
-					, 2);
+			ft_putstr_fd("Use:./pipex here\\_doc LIMITADOR comdo comd1 outfile"\
+					, 1);
 			exit(1);
 		}
 		num_ind = 3;

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: psangunna <psanguna@student.42madrid>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/01 13:32:12 by psangunna         #+#    #+#             */
-/*   Updated: 2024/08/01 13:32:17 by psangunna        ###   ########.fr       */
+/*   Created: 2024/08/03 10:54:06 by psangunna         #+#    #+#             */
+/*   Updated: 2024/08/03 15:46:30 by psangunna        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	ft_execute_command(const char *cmd, char *env[])
 	ft_free_array(paths_array);
 	if (execve(right_path, command_array, env) == -1)
 	{
-		ft_putstr_fd("pipex: command not found: ", 2);
+		ft_putstr_fd("pipex: command not found: ", 1);
 		ft_putendl_fd(command_array[0], 2);
 		ft_free_array(command_array);
 		free(right_path);
@@ -71,7 +71,7 @@ static void	ft_handle_second_process(int fd[2], const char *comd2,
 
 	close(fd[WRITE_END]);
 	ft_redirect_input_output(fd[READ_END], STDIN_FILENO);
-	fd_out = open(out_file, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	fd_out = open(out_file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd_out == -1)
 	{
 		perror("Error opening output file");
@@ -89,7 +89,7 @@ int	main(int argc, char *argv[], char *env[])
 
 	if (argc != 5)
 	{
-		ft_putstr_fd("Use:./pipex inputfile command1 command2 outputfile", 2);
+		ft_putstr_fd("Use:./pipex inputfile command1 command2 outputfile", 1);
 		exit(1);
 	}
 	if (pipe(fd) == -1)
