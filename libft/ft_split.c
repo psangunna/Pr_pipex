@@ -13,7 +13,8 @@
 #include "libft.h"
 #include <stdio.h>
 
-/* Helper function to manage quotes */
+/* Helper function to manage a quoted substring within a string, accounting
+for single quotes and a specified delimiter */
 static size_t	handle_quotes(const char *str, char delimiter)
 {
 	size_t	length;
@@ -58,7 +59,7 @@ static size_t	count_words(char const *str, char delimiter)
 }
 
 /* Helper function to get the works and save them into the array */
-char	*get_word(const char *str, unsigned int start, char delimiter,
+static char	*get_word(const char *str, unsigned int start, char delimiter,
 		size_t *word_length)
 {
 	size_t		length;
