@@ -51,7 +51,15 @@ The program should be executed as follows:
 * In case of doubt, handle errors as the shell command would: *<infile cmd1 | cmd2 > outfile*
 ### _Logic and Implementation_ <a name="logic"></a>
 #### High-Level Overview <a name="h_level"></a>
-This **Pipex** project simulates a shell pipeline. It reads from an inout file, executes the first command, pipes its output to the second command, and writes the final output to an output file. The project involves process creation, piping, file redirection, and command execution.
+This **Pipex** project simulates a shell pipeline. It reads from an inout file, executes the first command, pipes its output to the second command, and writes the final output to an output file. The project involves process creation, piping, file redirection, and command execution.  
+
+The implementation of this project follows a sequential code approach. Each step in the process is executed in a linear order:
+
+* **File Handling**: Open the input and output files in a defined sequence.
+* **Pipe Creation**: Create pipes before forking processes.
+* **Process Forking**: Fork processes to execute commands sequentially.
+* **Command Execution**: Execute commands in a specific order, ensuring each command completes before moving to the next.
+* **Resource Cleanup**: Close files and pipes and wait for processes to finish in a controlled sequence.
 #### Detailed Steps <a name="detail"></a>
 1. **To check the number of arguments**.  
 2. **To create a pipe**: Set up a pipe to connect the two processes.  
@@ -68,37 +76,78 @@ This **Pipex** project simulates a shell pipeline. It reads from an inout file, 
 * Wait for both child processes to finish.
 * Close the pipe ends.  
 #### Pseudo Code <a name="pseudo"></a>
+* **Main function**  
 
-    Funtion main (argc, argv, env)
-	    If argc != 5
-	        Print usage error
-	        Exit with error
+    	Main function (argc, argv, env)
+		    If argc != 5
+		        Print usage error
+		        Exit with error
+		
+		    Create pipe(fd)
+		    If pipe creation fails
+		        Print error
+		        Exit with error
+		
+		    Create first child process (pid1)
+		    If pid1 == 0 (child process)
+		        Handle first process
+		        Exit
+		    Close write end of pipe in parent
+		    Wait for first child to finish
+		
+		    Create second child process (pid2)
+		    If pid2 == 0 (child process)
+		        Handle second process
+		        Exit
+		    Close read end of pipe in parent
+		    Wait for second child to finish
+		    Return 0     
+  * **Processes functions and Command function**  
 	
-	    Create pipe(fd)
-	    If pipe creation fails
-	        Print error
-	        Exit with error
-	
-	    Create first child process (pid1)
-	    If pid1 == 0 (child process)
-	        Handle first process
-	        Exit
-	
-	    Close write end of pipe in parent
-	    Wait for first child to finish
-	
-	    Create second child process (pid2)
-	    If pid2 == 0 (child process)
-	        Handle second process
-	        Exit
-	
-	    Close read end of pipe in parent
-	    Wait for second child to finish
-	    Return 0   
+		Handle_first_process function(fd, command1, infile, env)
+		    Open infile for reading
+		    If file open fails
+		        Print error
+		        Exit with error
+		    Close read end of pipe
+		    Redirect infile to STDIN
+		    Redirect pipe write end to STDOUT
+		    Execute command1
 
+		Handle_second_process function(fd, command2, outfile, env)
+		    Close write end of pipe
+		    Redirect pipe read end to STDIN
+		    Open outfile for writing
+		    If file open fails
+		        Print error
+		        Exit with error
+		    Redirect outfile to STDOUT
+		    Execute command2
+
+		Execute_command function(cmd, env)
+		    Split cmd into command_array
+		    Get paths from env
+		    Split paths into paths_array
+		    Find right_path in paths_array
+		    If execve fails
+		        Print command not found error
+		        Free allocated memory
+		        Exit with error
 
 #### Sequence Diagram of get_next_line Function and Subfunctions <a name="diagram"></a>
 #### Code Explanation <a name="code"></a>
+* **ft_execute_command**: Splits the command string into an array, finds the correct path for the command, and executes it using **execve**. If execve fails, it shows an error and exits.
+* **ft_handle_first_process**: Handles the first child process by opening the input file, redirecting input and output, and executing the first command.
+* **ft_handle_second_process**: Handles the second child process by redirecting input from the pipe, opening the output file, redirecting output, and executing the second command.
+* **main**: The main function manages the entire process by creating the pipe, forking the child processes, and waiting for them to finish.  
+  
+*Additional Functions*
+* **ft_get_set_paths**: Retrieves the value of the **PATH** environment variable from an environment array.  
+* **ft_get_path**: Finds the correct path for a given command by searching through the directories in **PATH**.  
+* **ft_redirect_input_output**: Redirect file descriptors.  
+* **ft_free_array**: Frees all strings in an array and then the array itself.   
+* **ft_create_process**: Creates a child process using f**fork**. If **fork** fails, it prints an error and exits.  
+
 ### *Acknowledgements* <a name="ack"></a>
 ### _Bonus Part_ <a name="bonus"></a>
 #### Bonus Requirements <a name="b_req"></a>
