@@ -32,8 +32,8 @@ $> < infile command1 | command2 > outfile
 * **libft**
 #### Project Files <a name="pr_files"></a>
 * **Makefile**
-* **Header files (*.h)**
-* **Source code files (*.c)**
+* **Header files (*.h)**: pipex.h
+* **Source code files (*.c)**: pipex.c, pipex_helpers.c
 #### Compilation <a name="compilation"></a>
 To compile the project, use the included **Makefile**. The available targets are:
 * **make**: Compiles the program.
@@ -210,8 +210,8 @@ Should behave as:
 ``command << LIMITER | command1 >> file``
 #### Bonus Files <a name="b_files"></a>
 In addition to the mandatory files, you need to deliver the following files for the bonus part:
-* **Header bonus file (*_bonus.h)**
-* **Source code bonus file (*_bonus.c)**
+* **Header bonus file (*_bonus.h)**: pipex_bonus.h
+* **Source code bonus file (*_bonus.c)**: pipex_bonus.c, pipex_helpers_bonus.c
 #### Compilation for Bonus Part<a name="b_compilation"></a>
 To compile the bonus part, use the included **Makefile**. The available targets are:
 * **make bonus**: Compiles the bonus part.
