@@ -53,49 +53,48 @@ The program should be executed as follows:
 #### High-Level Overview <a name="h_level"></a>
 This **Pipex** project simulates a shell pipeline. It reads from an inout file, executes the first command, pipes its output to the second command, and writes the final output to an output file. The project involves process creation, piping, file redirection, and command execution.
 #### Detailed Steps <a name="detail"></a>
-**1.** **To check the number of arguments**.
-**2.** **To create a pipe**: Set up a pipe to connect the two processes.
-**3.** **First child process**:
+1. **To check the number of arguments**.  
+2. **To create a pipe**: Set up a pipe to connect the two processes.  
+3. **First child process**:  
 * Open the input file.
 * Redirect input and output.
-* Execute the first command.
-**4.** **Second child process**:
+* Execute the first command.  
+4. **Second child process**:  
 * Redirect input from the pipe.
 * Open the output file.
 * Redirect output.
-* Execute the second command.
-**5.** **Parent process**:
+* Execute the second command.  
+5. **Parent process**:  
 * Wait for both child processes to finish.
-* Close the pipe ends.
+* Close the pipe ends.  
 #### Pseudo Code <a name="pseudo"></a>
 
-
     Funtion main (argc, argv, env)
-    If argc != 5
-        Print usage error
-        Exit with error
-
-    Create pipe(fd)
-    If pipe creation fails
-        Print error
-        Exit with error
-
-    Create first child process (pid1)
-    If pid1 == 0 (child process)
-        Handle first process
-        Exit
-
-    Close write end of pipe in parent
-    Wait for first child to finish
-
-    Create second child process (pid2)
-    If pid2 == 0 (child process)
-        Handle second process
-        Exit
-
-    Close read end of pipe in parent
-    Wait for second child to finish
-    Return 0
+	    If argc != 5
+	        Print usage error
+	        Exit with error
+	
+	    Create pipe(fd)
+	    If pipe creation fails
+	        Print error
+	        Exit with error
+	
+	    Create first child process (pid1)
+	    If pid1 == 0 (child process)
+	        Handle first process
+	        Exit
+	
+	    Close write end of pipe in parent
+	    Wait for first child to finish
+	
+	    Create second child process (pid2)
+	    If pid2 == 0 (child process)
+	        Handle second process
+	        Exit
+	
+	    Close read end of pipe in parent
+	    Wait for second child to finish
+	    Return 0   
 
 
 #### Sequence Diagram of get_next_line Function and Subfunctions <a name="diagram"></a>
