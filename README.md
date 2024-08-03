@@ -20,7 +20,8 @@ __Pipex__ is a pipe handling project in C. This README provides details on the i
 	- [Usage for Bonus Part](#b_usage)
 - [Acknowledgements](#ack)
 ### _Description_ <a name="description"></a>
-This program replicates the behavior of the shell construction *< infile cmd1 | cmd2 > outfile*. The program takes four arguments: *infile*, *command1*, *command2*, and *outfile*.  
+This program replicates the behavior of the shell construction *< infile cmd1 | cmd2 > outfile*. The program takes four arguments: *infile*, *command1*, *command2*, and *outfile*. 
+  
 The program should perform the same operation as the following shell command:  
 ``
 $> < infile command1 | command2 > outfile
