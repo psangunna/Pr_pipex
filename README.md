@@ -140,7 +140,7 @@ The implementation of this project follows a sequential code approach. Each step
 		        Free allocated memory
 		        Exit with error
 
-#### Sequence Diagram of get_next_line Function and Subfunctions <a name="diagram"></a>  
+#### Sequence Diagram of *Pipex* program <a name="diagram"></a>  
 ```mermaid
 sequenceDiagram
     participant Main as Main Function
@@ -293,43 +293,58 @@ The program is designed to execute a series of commands, taking input from a fil
 			            wait for child to finish
 			        increment i
  
-#### Sequence Diagram of get_next_line Function and Subfunctions <a name="diagram_bonus"></a>  
+#### Sequence Diagram of *Pipex* bonus program <a name="diagram_bonus"></a>  
 ```mermaid
 sequenceDiagram
-    participant main
-    participant ft_managment_files
-    participant ft_handle_here_doc
-    participant ft_crear_pipes
-    participant ft_execute_command
+    participant Main
+    participant Pipe
+    participant Child
+    participant Parent
 
-    main->>main: Check argc
-    alt argc < 5
-        main->>main: Print usage message
-        main->>main: exit(1)
+    Main->>Main: Check if arguments are valid
+    alt Arguments invalid
+        Main->>Main: Print usage message and exit
     end
 
-    main->>main: Set num_ind based on argv[1]
-    alt argv[1] == "here_doc"
-        main->>main: Check argc < 6
-        alt argc < 6
-            main->>main: Print usage message
-            main->>main: exit(1)
+    Main->>Main: Determine if here_doc mode
+
+    Main->>Main: Manage files
+    alt Here_doc mode
+        Main->>Pipe: Create a pipe
+        Main->>Child: Fork process
+        alt Child process
+            Child->>Pipe: Close read end of pipe
+            Child->>Child: Read from stdin until delimiter
+            Child->>Pipe: Write input to pipe
+        else Parent process
+            Parent->>Pipe: Close write end of pipe
+            Parent->>Parent: Redirect pipe's read end to stdin
+            Parent->>Parent: Wait for child to finish
         end
-        main->>main: Set num_ind to 3
+    else Normal mode
+        Main->>Main: Open input file in read-only mode
+        Main->>Main: Open output file in write mode
+        Main->>Main: Redirect input file to stdin
     end
 
-    main->>ft_managment_files: Call ft_managment_files(argc, argv, &fd_out, num_ind)
-    alt num_ind == 3
-        ft_managment_files->>ft_handle_here_doc: Call ft_handle_here_doc(argv[2])
-    else
-        ft_managment_files->>ft_managment_files: Open input/output files
+    Main->>Main: Create pipes and execute commands sequentially
+    loop For each command
+        Main->>Pipe: Create a pipe
+        Main->>Child: Fork process
+        alt Child process
+            Child->>Pipe: Close read end of pipe
+            Child->>Pipe: Redirect write end to stdout
+            Child->>Child: Execute command
+        else Parent process
+            Parent->>Pipe: Close write end of pipe
+            Parent->>Pipe: Redirect read end to stdin
+            Parent->>Parent: Wait for child to finish
+        end
     end
 
-    main->>ft_crear_pipes: Call ft_crear_pipes(num_ind, argc, argv, env)
-    ft_crear_pipes->>ft_crear_pipes: Create pipes and execute commands
+    Main->>Main: Redirect final output to output file
+    Main->>Main: Execute last command
 
-    main->>main: ft_redirect_input_output(fd_out, STDOUT_FILENO)
-    main->>ft_execute_command: Call ft_execute_command(argv[argc - 2], env)
 
 ```
 #### Code Explanation <a name="code_bonus"></a>
