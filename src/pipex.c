@@ -84,8 +84,7 @@ static void	ft_handle_second_process(int fd[2], const char *comd2,
 int	main(int argc, char *argv[], char *env[])
 {
 	int		fd[2];
-	pid_t	pid1;
-	pid_t	pid2;
+	pid_t	pid;
 
 	if (argc != 5)
 	{
@@ -97,15 +96,15 @@ int	main(int argc, char *argv[], char *env[])
 		perror("Error creating pipe");
 		exit(1);
 	}
-	pid1 = ft_create_process();
-	if (pid1 == 0)
+	pid = ft_create_process();
+	if (pid == 0)
 		ft_handle_first_process(fd, argv[2], argv[1], env);
 	close(fd[WRITE_END]);
-	waitpid(pid1, NULL, 0);
-	pid2 = ft_create_process();
-	if (pid2 == 0)
+	waitpid(pid, NULL, 0);
+	pid = ft_create_process();
+	if (pid == 0)
 		ft_handle_second_process(fd, argv[3], argv[4], env);
 	close(fd[READ_END]);
-	waitpid(pid2, NULL, 0);
+	waitpid(pid, NULL, 0);
 	return (0);
 }
