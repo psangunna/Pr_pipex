@@ -18,7 +18,12 @@ __Pipex__ is a pipe handling project in C. This README provides details on the i
 	- [Bonus files](#b_files)
 	- [Compilation for Bonus Part](#b_compilation)
 	- [Usage for Bonus Part](#b_usage)
-- [Acknowledgements](#ack)
+  - [Logic and Implementation](#logic_bonus)
+	- [High-Level Overview](#h_level_bonus)
+	- [Detail steps](#detail_bonus)
+	- [Pseudo Code](#pseudo_bonus)
+	- [Sequence Diagram of get_next_line Function and Subfunctions](#diagram_bonus)
+	- [Code explanation](#code_bonus)
 ### _Description_ <a name="description"></a>
 This program replicates the behavior of the shell construction *< infile cmd1 | cmd2 > outfile*. The program takes four arguments: *infile*, *command1*, *command2*, and *outfile*. 
   
@@ -103,7 +108,7 @@ The implementation of this project follows a sequential code approach. Each step
 		    Close read end of pipe in parent
 		    Wait for second child to finish
 		    Return 0     
-  * **Processes functions and Command function**  
+* **Processes functions and Command function**  
 	
 		Handle_first_process function(fd, command1, infile, env)
 		    Open infile for reading
@@ -188,7 +193,7 @@ sequenceDiagram
 * **ft_handle_second_process**: Handles the second child process by redirecting input from the pipe, opening the output file, redirecting output, and executing the second command.
 * **main**: The main function manages the entire process by creating the pipe, forking the child processes, and waiting for them to finish.  
   
-*Additional Functions*
+	*Additional Functions*
 * **ft_get_set_paths**: Retrieves the value of the **PATH** environment variable from an environment array.  
 * **ft_get_path**: Finds the correct path for a given command by searching through the directories in **PATH**.  
 * **ft_redirect_input_output**: Redirect file descriptors.  
@@ -218,5 +223,120 @@ To compile the bonus part, use the included **Makefile**. The available targets 
 * **make clean**: Removes object files.
 * **make fclean**: Removes object files and the executable.
 * **make rebonus**: Cleans and recompiles the bonus part.
+### _Logic and Implementation_ <a name="logic_bonus"></a>  
+#### High-Level Overview <a name="h_level_bonus"></a>  
+The program is designed to execute a series of commands, taking input from a file or *here-document*, and outputting to another file. The process involves creating pipes, forking processes, and redirecting inputs and outputs as necessary.  
+#### Detailed Steps <a name="detail_bonus"></a>  
+1. **Argument Validation**: Check the number of arguments.  
+2. **Here-Document Handling**: If *here_doc* is specified, set up the here-document.  
+3. **File Management**: Open the input and output files as needed.  
+4. **Pipe Creation and Command Execution**: Create pipes and fork processes to execute commands.  
+5. **Output Redirection**: Redirect the final output to the specified output file.  
+6. **Command Execution**: Execute the final command.  
+#### Pseudo Code <a name="pseudo_bonus"></a>  
+* **Main function**
+  
+		    	Main function (argc, argv, env)
+			    if insufficient arguments:
+			        print usage message
+			        exit
+			    determine if here_doc mode
+			    manage files
+			    create pipes and execute commands sequentially
+			    redirect final output to output file
+			    execute last command
+			    return 0
+			
+ * **Processes functions and Command function**
+   
+			Handle_here_doc function(delimiter):
+			    create a pipe
+			    fork process
+			    if child:
+			        close read end of pipe
+			        read from standard input until delimiter is encountered
+			        write input to pipe
+			    else:
+			        close write end of pipe
+			        redirect pipe's read end to standard input
+			        wait for child to finish
+
+			Manage_files function(argc, argv, fd_out, ind):
+			    if here_doc mode:
+			        open output file in append mode
+			        handle_here_doc with delimiter
+			    else:
+			        open input file in read-only mode
+			        open output file in write mode
+			        redirect input file to standard input
+			
+			Execute_command function(cmd, env):
+			    split cmd into command array
+			    get paths from environment
+			    find correct path for command
+			    if execve fails:
+			        print error message
+			        free memory
+			        exit
+			
+			Create_pipes function(i, argc, argv, env):
+			    while i < argc - 2:
+			        create a pipe
+			        fork process
+			        if child:
+			            close read end of pipe
+			            redirect write end of pipe to standard output
+			            execute command
+			        else:
+			            close write end of pipe
+			            redirect read end of pipe to standard input
+			            wait for child to finish
+			        increment i
+ 
+#### Sequence Diagram of get_next_line Function and Subfunctions <a name="diagram_bonus"></a>  
+```mermaid
+sequenceDiagram
+    participant main
+    participant ft_managment_files
+    participant ft_handle_here_doc
+    participant ft_crear_pipes
+    participant ft_execute_command
+
+    main->>main: Check argc
+    alt argc < 5
+        main->>main: Print usage message
+        main->>main: exit(1)
+    end
+
+    main->>main: Set num_ind based on argv[1]
+    alt argv[1] == "here_doc"
+        main->>main: Check argc < 6
+        alt argc < 6
+            main->>main: Print usage message
+            main->>main: exit(1)
+        end
+        main->>main: Set num_ind to 3
+    end
+
+    main->>ft_managment_files: Call ft_managment_files(argc, argv, &fd_out, num_ind)
+    alt num_ind == 3
+        ft_managment_files->>ft_handle_here_doc: Call ft_handle_here_doc(argv[2])
+    else
+        ft_managment_files->>ft_managment_files: Open input/output files
+    end
+
+    main->>ft_crear_pipes: Call ft_crear_pipes(num_ind, argc, argv, env)
+    ft_crear_pipes->>ft_crear_pipes: Create pipes and execute commands
+
+    main->>main: ft_redirect_input_output(fd_out, STDOUT_FILENO)
+    main->>ft_execute_command: Call ft_execute_command(argv[argc - 2], env)
+
+```
+#### Code Explanation <a name="code_bonus"></a>
+* **ft_handle_here_doc**: Handles the here-document functionality by creating a pipe and forking a child process to read input from the user until the delimiter is encountered.  
+* **ft_managment_files**: Manages opening the input and output files based on whether the *here-document* mode is active or not. It also redirects the appropriate file descriptors.  
+* **ft_execute_command**: It is responsible for executing a given command. It splits the command string into an array, finds the correct path for the command, and uses **execve** to execute it. 
+* **ft_crear_pipes**: Creates pipes and forks processes to execute each command in sequence. It handles the redirection of the input and output through the pipes.  
+* **main**: Validates the arguments, determines if here-document mode is active, manages the files, creates pipes, and executes the commands sequentially. It ends by executing the final command and redirecting its output to the specified file.  
 ### *Acknowledgements* <a name="ack"></a>
 This project is part of the curriculum at [42 Madrid](https://www.42madrid.com/). Thanks to the 42 Network for providing the resources and guidance to complete this project.
