@@ -40,7 +40,7 @@ static void	ft_execute_command(const char *cmd, char *env[])
 	if (execve(right_path, command_array, env) == -1)
 	{
 		ft_putstr_fd("pipex: command not found: ", 1);
-		ft_putendl_fd(command_array[0], 2);
+		ft_putendl_fd(command_array[0], 1);
 		ft_free_array(command_array);
 		free(right_path);
 		exit(1);
