@@ -115,7 +115,7 @@ int	main(int argc, char *argv[], char *env[])
 
 	if (argc < 5)
 	{
-		ft_putstr_fd("Use:./pipex infile comnd1 comd2 .. comdn outfile", 1);
+		ft_putstr_fd("Use:./pipex infile comnd1 comd2 .. comdn outfile\n", 1);
 		exit(1);
 	}
 	num_ind = 2;
@@ -123,7 +123,7 @@ int	main(int argc, char *argv[], char *env[])
 	{
 		if (argc < 6)
 		{
-			ft_putstr_fd("Use:./pipex here\\_doc LIMITADOR comdo comd1 outfile"\
+			ft_putstr_fd("Use:./pipex here\\_doc LIMITADOR comdo comd1 outfile\n"\
 					, 1);
 			exit(1);
 		}
