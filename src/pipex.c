@@ -88,7 +88,7 @@ int	main(int argc, char *argv[], char *env[])
 
 	if (argc != 5)
 	{
-		ft_putstr_fd("Use:./pipex inputfile command1 command2 outputfile", 1);
+		ft_putstr_fd("Use:./pipex inputfile command1 command2 outputfile\n", 1);
 		exit(1);
 	}
 	if (pipe(fd) == -1)
