@@ -6,7 +6,7 @@
 /*   By: psangunna <psanguna@student.42madrid>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 10:53:10 by psangunna         #+#    #+#             */
-/*   Updated: 2024/08/03 10:56:04 by psangunna        ###   ########.fr       */
+/*   Updated: 2024/08/05 13:35:16 by pamela           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ static void	ft_managment_files(int argc, char *argv[], int *fd_out, int ind)
 	{
 		fd_in = open(argv[1], O_RDONLY);
 		if (fd_in == -1)
+		{
+			perror("Error opening input file");
 			exit(1);
+		}
 		*fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 		if (*fd_out == -1)
 			exit(1);
@@ -123,8 +126,8 @@ int	main(int argc, char *argv[], char *env[])
 	{
 		if (argc < 6)
 		{
-			ft_putstr_fd("Use:./pipex here\\_doc LIMITADOR comdo comd1 outfile\n"\
-					, 1);
+			ft_putstr_fd("Use:./pipex here\\_doc LIMITADOR comdo comd1 \
+					outfile\n", 1);
 			exit(1);
 		}
 		num_ind = 3;
